@@ -1,101 +1,181 @@
 package edu.neu.cs5200.chaanda.models;
 
-import java.util.Date;
+import java.io.Serializable;
 
 import javax.persistence.*;
 
+import java.util.Date;
+import java.util.List;
+
+
+/**
+ * The persistent class for the person database table.
+ * 
+ */
 @Entity
-@Inheritance(strategy=InheritanceType.JOINED)
-@DiscriminatorColumn(name="personId")
-public abstract class Person {
+@NamedQuery(name="Person.findAll", query="SELECT p FROM Person p")
+public class Person implements Serializable {
+	private static final long serialVersionUID = 1L;
 
 	@Id
-	private Integer personId;
-	private String personName;
-	private String email;
-	private long phone;
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private int personId;
+
+	@Temporal(TemporalType.DATE)
 	private Date dateOfBirth;
+
+	private String email;
+
 	private String gender;
-	private String userName;
+
 	private String password;
 
-	@OneToOne
-	private Role role;
-	
-	@OneToOne
+	private String personName;
+
+	private int phone;
+
+	private String roleName;
+
+	private String userName;
+
+	//bi-directional many-to-one association to Address
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name="addressId")
 	private Address address;
 
-	public Integer getPersonId() {
-		return personId;
+	//bi-directional many-to-one association to Transaction
+	@OneToMany(mappedBy="person")
+	private List<Transaction> transactions;
+
+	//bi-directional many-to-one association to Universityadminmapping
+	@OneToMany(mappedBy="person")
+	private List<Universityadminmapping> universityadminmappings;
+
+	public Person() {
 	}
 
-	public void setPersonId(Integer personId) {
+	public int getPersonId() {
+		return this.personId;
+	}
+
+	public void setPersonId(int personId) {
 		this.personId = personId;
 	}
 
-	public String getPersonName() {
-		return personName;
-	}
-
-	public void setPersonName(String personName) {
-		this.personName = personName;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public long getPhone() {
-		return phone;
-	}
-
-	public void setPhone(long phone) {
-		this.phone = phone;
-	}
-
 	public Date getDateOfBirth() {
-		return dateOfBirth;
+		return this.dateOfBirth;
 	}
 
 	public void setDateOfBirth(Date dateOfBirth) {
 		this.dateOfBirth = dateOfBirth;
 	}
 
+	public String getEmail() {
+		return this.email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
 	public String getGender() {
-		return gender;
+		return this.gender;
 	}
 
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
 
-	public String getUserName() {
-		return userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-
 	public String getPassword() {
-		return password;
+		return this.password;
 	}
 
 	public void setPassword(String password) {
 		this.password = password;
 	}
 
-	public Role getRole() {
-		return role;
+	public String getPersonName() {
+		return this.personName;
 	}
 
-	public void setRole(Role role) {
-		this.role = role;
-	}	
-	
-	
+	public void setPersonName(String personName) {
+		this.personName = personName;
+	}
+
+	public int getPhone() {
+		return this.phone;
+	}
+
+	public void setPhone(int phone) {
+		this.phone = phone;
+	}
+
+	public String getRoleName() {
+		return this.roleName;
+	}
+
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
+	}
+
+	public String getUserName() {
+		return this.userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public Address getAddress() {
+		return this.address;
+	}
+
+	public void setAddress(Address address) {
+		this.address = address;
+	}
+
+	public List<Transaction> getTransactions() {
+		return this.transactions;
+	}
+
+	public void setTransactions(List<Transaction> transactions) {
+		this.transactions = transactions;
+	}
+
+	public Transaction addTransaction(Transaction transaction) {
+		getTransactions().add(transaction);
+		transaction.setPerson(this);
+
+		return transaction;
+	}
+
+	public Transaction removeTransaction(Transaction transaction) {
+		getTransactions().remove(transaction);
+		transaction.setPerson(null);
+
+		return transaction;
+	}
+
+	public List<Universityadminmapping> getUniversityadminmappings() {
+		return this.universityadminmappings;
+	}
+
+	public void setUniversityadminmappings(List<Universityadminmapping> universityadminmappings) {
+		this.universityadminmappings = universityadminmappings;
+	}
+
+	public Universityadminmapping addUniversityadminmapping(Universityadminmapping universityadminmapping) {
+		getUniversityadminmappings().add(universityadminmapping);
+		universityadminmapping.setPerson(this);
+
+		return universityadminmapping;
+	}
+
+	public Universityadminmapping removeUniversityadminmapping(Universityadminmapping universityadminmapping) {
+		getUniversityadminmappings().remove(universityadminmapping);
+		universityadminmapping.setPerson(null);
+
+		return universityadminmapping;
+	}
+
 }

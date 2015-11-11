@@ -1,101 +1,123 @@
 package edu.neu.cs5200.chaanda.models;
 
+import java.io.Serializable;
+import javax.persistence.*;
 import java.util.List;
 
-import javax.persistence.*;
 
+/**
+ * The persistent class for the university database table.
+ * 
+ */
 @Entity
-public class University {
+@NamedQuery(name="University.findAll", query="SELECT u FROM University u")
+public class University implements Serializable {
+	private static final long serialVersionUID = 1L;
+
 	@Id
-	private Integer universityId;
+	private int universityId;
+
+	private int bankAccountNo;
+
+	private int registered;
+
+	private int universityAddressId;
+
 	private String universityName;
-	
-	@OneToOne
-	private BankAccount universityBankAccount;
-	
-	@OneToOne
-	private Address universityAddress;
-	
-	@OneToMany
-	private List<Degree> degrees;
-	
-	@OneToMany
-	private List<Student> students;
-	
-	
-	public Integer getUniversityId() {
-		return universityId;
+
+	//bi-directional many-to-one association to College
+	@OneToMany(mappedBy="university")
+	private List<College> colleges;
+
+	//bi-directional many-to-one association to Universityadminmapping
+	@OneToMany(mappedBy="university")
+	private List<Universityadminmapping> universityadminmappings;
+
+	public University() {
 	}
 
+	public int getUniversityId() {
+		return this.universityId;
+	}
 
-	public void setUniversityId(Integer universityId) {
+	public void setUniversityId(int universityId) {
 		this.universityId = universityId;
 	}
 
-
-	public String getUniversityName() {
-		return universityName;
+	public int getBankAccountNo() {
+		return this.bankAccountNo;
 	}
 
+	public void setBankAccountNo(int bankAccountNo) {
+		this.bankAccountNo = bankAccountNo;
+	}
+
+	public int getRegistered() {
+		return this.registered;
+	}
+
+	public void setRegistered(int registered) {
+		this.registered = registered;
+	}
+
+	public int getUniversityAddressId() {
+		return this.universityAddressId;
+	}
+
+	public void setUniversityAddressId(int universityAddressId) {
+		this.universityAddressId = universityAddressId;
+	}
+
+	public String getUniversityName() {
+		return this.universityName;
+	}
 
 	public void setUniversityName(String universityName) {
 		this.universityName = universityName;
 	}
 
-
-	public BankAccount getUniversityBankAccount() {
-		return universityBankAccount;
+	public List<College> getColleges() {
+		return this.colleges;
 	}
 
-
-	public void setUniversityBankAccount(BankAccount universityBankAccount) {
-		this.universityBankAccount = universityBankAccount;
+	public void setColleges(List<College> colleges) {
+		this.colleges = colleges;
 	}
 
+	public College addCollege(College college) {
+		getColleges().add(college);
+		college.setUniversity(this);
 
-	public Address getUniversityAddress() {
-		return universityAddress;
+		return college;
 	}
 
+	public College removeCollege(College college) {
+		getColleges().remove(college);
+		college.setUniversity(null);
 
-	public void setUniversityAddress(Address universityAddress) {
-		this.universityAddress = universityAddress;
+		return college;
 	}
 
-
-	public List<Degree> getDegrees() {
-		return degrees;
+	public List<Universityadminmapping> getUniversityadminmappings() {
+		return this.universityadminmappings;
 	}
 
-
-	public void setDegrees(List<Degree> degrees) {
-		this.degrees = degrees;
+	public void setUniversityadminmappings(List<Universityadminmapping> universityadminmappings) {
+		this.universityadminmappings = universityadminmappings;
 	}
 
+	public Universityadminmapping addUniversityadminmapping(Universityadminmapping universityadminmapping) {
+		getUniversityadminmappings().add(universityadminmapping);
+		universityadminmapping.setUniversity(this);
 
-	public List<Student> getStudents() {
-		return students;
+		return universityadminmapping;
 	}
 
+	public Universityadminmapping removeUniversityadminmapping(Universityadminmapping universityadminmapping) {
+		getUniversityadminmappings().remove(universityadminmapping);
+		universityadminmapping.setUniversity(null);
 
-	public void setStudents(List<Student> students) {
-		this.students = students;
+		return universityadminmapping;
 	}
 
-	public University(Integer universityId, String universityName,
-			BankAccount universityBankAccount, Address universityAddress,
-			List<Degree> degrees, List<Student> students) {
-		super();
-		this.universityId = universityId;
-		this.universityName = universityName;
-		this.universityBankAccount = universityBankAccount;
-		this.universityAddress = universityAddress;
-		this.degrees = degrees;
-		this.students = students;
-	}
-
-
-	public University() {
-		super();
-	}
 }
